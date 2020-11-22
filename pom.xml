@@ -46,12 +46,20 @@
             </exclusions>
         </dependency>
 
+        <!-- DATA BASE-->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>42.2.18</version>
             <scope>runtime</scope>
         </dependency>
+
+        <!--DATABASE MIGRATION SCRIPTS-->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
