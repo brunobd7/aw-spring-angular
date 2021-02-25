@@ -46,7 +46,7 @@
             </exclusions>
         </dependency>
 
-        <!-- DATA BASE-->
+        <!-- DATABASE-->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
