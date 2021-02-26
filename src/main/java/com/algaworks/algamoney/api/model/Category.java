@@ -1,6 +1,8 @@
 package com.algaworks.algamoney.api.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "category")
@@ -10,6 +12,8 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotNull
+    @Size(min =3 ,max = 20)
     private String name;
 
     public Integer getId() {

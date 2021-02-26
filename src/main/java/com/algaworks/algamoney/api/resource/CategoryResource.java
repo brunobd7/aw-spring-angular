@@ -11,6 +11,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
@@ -38,14 +39,14 @@ public class CategoryResource {
     //@RequesteBody usado para pegar valor do body do json de origem do post
     @PostMapping
 //    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Category> create(@RequestBody Category category , HttpServletResponse response){
+    public ResponseEntity<Category> create(@Valid @RequestBody Category category , HttpServletResponse response){
         Category createdCategory = categoryRepository.save(category);
 
         //ADD AO HEADER E URI A LOCATION COM DADOS DA ENTIDADE SALVA NO BANCO
         URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}")
                 .buildAndExpand(createdCategory.getId()).toUri();
 
-        response.setHeader("Location", uri.toASCIIString());
+//        response.setHeader("Location", uri.toASCIIString());
 
         //RETORNANDO OBJTO DA ENTITY CRIADA NO REPONSE BODY  E VALIDANDO O HTTP CODE DE RETORNO , ASSIM NAO SENDO NECESSARIO A ANOTACAO @responseStatus
         return ResponseEntity.created(uri).body(createdCategory);

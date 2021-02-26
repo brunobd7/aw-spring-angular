@@ -7,9 +7,16 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 //CONTROLLER QUE 'OBSERVA/ESCUTA' toda a aplicacao para tratamento das excecoes
 @ControllerAdvice
@@ -31,8 +38,37 @@ public class AlgamoneyExceptionHandler extends ResponseEntityExceptionHandler {
         //LOCALE PODE SER CONFIGURADO PARA CADA LOCALIDADE EX.BR ,USA ,CHINA
         String userMessage = messageSource.getMessage("mensagem.invalida",null, LocaleContextHolder.getLocale());
         String devMessage = ex.getCause().toString(); //CAUSA TECNICA DA EXCEPTION
+        List<ErroAux> trackedErros = Arrays.asList(new ErroAux(userMessage,devMessage));
 
-        return handleExceptionInternal(ex, new ErroAux(userMessage,devMessage),headers,HttpStatus.BAD_REQUEST,request);
+        return handleExceptionInternal(ex, trackedErros, headers, HttpStatus.BAD_REQUEST, request);
+    }
+
+    //TRATA EXCECOES DE REQUESTS DE ARGUMENTOS/PARAMETROS NAO VALIDOS EX. VALOR NULL EM CAMPOS ANOTADOS COM @NOTNULL.
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    //      DEFAULT
+//        return super.handleMethodArgumentNotValid(ex, headers, status, request);
+
+        //BINDING RESULT RETURN ALL ERROS ENVOLVED INTO EXCEPTION
+        List<ErroAux> erros = createErrosList(ex.getBindingResult());
+        return handleExceptionInternal(ex, erros, headers, HttpStatus.BAD_REQUEST, request);
+    }
+
+    //MOUNT LIST OF ERROS ENVOLVED INTO EXCEPTIONS
+    private List<ErroAux> createErrosList(BindingResult bindingResult){
+
+        List<ErroAux> erros = new ArrayList<>();
+
+        //ERROS CAUSED BY BAD FILLING IN FILEDS
+        for (FieldError fieldError : bindingResult.getFieldErrors()) {
+
+            String userMessage = messageSource.getMessage(fieldError,LocaleContextHolder.getLocale());
+            String devMessage = fieldError.toString();
+
+            erros.add(new ErroAux(userMessage, devMessage));
+        }
+
+        return erros;
     }
 
     public static class ErroAux {
