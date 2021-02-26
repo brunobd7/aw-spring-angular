@@ -7,7 +7,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletResponse;
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -32,8 +36,22 @@ public class CategoryResource {
     //PostMapping anotacao para mapeamento dos metodos que atendente requisicoes POST
     //@RequesteBody usado para pegar valor do body do json de origem do post
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody Category category){
-        categoryRepository.save(category);
+//    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<Category> create(@RequestBody Category category , HttpServletResponse response){
+        Category createdCategory = categoryRepository.save(category);
+
+        //ADD AO HEADER E URI A LOCATION COM DADOS DA ENTIDADE SALVA NO BANCO
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}")
+                .buildAndExpand(createdCategory.getId()).toUri();
+
+        response.setHeader("Location", uri.toASCIIString());
+
+        //RETORNANDO OBJTO DA ENTITY CRIADA E VALIDANDO O HTTP CODE DE RETORNO , ASSIM NAO SENDO NECESSARIO A ANOTACAO @responseStatus
+        return ResponseEntity.created(uri).body(createdCategory);
+    }
+
+    @GetMapping("/{id}")
+    public Category findByCode(@PathVariable Integer id){
+        return categoryRepository.findById(id).orElse(new Category());
     }
 }
