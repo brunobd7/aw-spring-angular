@@ -47,7 +47,7 @@ public class CategoryResource {
 
         response.setHeader("Location", uri.toASCIIString());
 
-        //RETORNANDO OBJTO DA ENTITY CRIADA E VALIDANDO O HTTP CODE DE RETORNO , ASSIM NAO SENDO NECESSARIO A ANOTACAO @responseStatus
+        //RETORNANDO OBJTO DA ENTITY CRIADA NO REPONSE BODY  E VALIDANDO O HTTP CODE DE RETORNO , ASSIM NAO SENDO NECESSARIO A ANOTACAO @responseStatus
         return ResponseEntity.created(uri).body(createdCategory);
     }
 
