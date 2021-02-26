@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/categories")
@@ -50,8 +51,18 @@ public class CategoryResource {
         return ResponseEntity.created(uri).body(createdCategory);
     }
 
+    //GET POR PARAMETRO ID
+    //@PATHVARIABLE PERMITE QUE O ATRIBUTO PASSADO PELA URI/URL SEJA UTILIZADO
     @GetMapping("/{id}")
-    public Category findByCode(@PathVariable Integer id){
-        return categoryRepository.findById(id).orElse(new Category());
+    public ResponseEntity findByCode(@PathVariable Integer id){
+//        return categoryRepository.findById(id).orElse(new Category());
+
+       Category categoryFounded = categoryRepository.findById(id).orElse(null);
+       return categoryFounded != null
+               ? ResponseEntity.ok(categoryFounded) : ResponseEntity.notFound().build();
+
+//        Optional <Category> categoryFounded = categoryRepository.findById(id);
+//        return categoryFounded.isPresent()
+//                ? ResponseEntity.ok(categoryFounded) : ResponseEntity.notFound().build();
     }
 }
