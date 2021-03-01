@@ -1,20 +1,17 @@
 package com.algaworks.algamoney.api.resource;
 
+import com.algaworks.algamoney.api.event.ResourceCreatedEvent;
 import com.algaworks.algamoney.api.model.Category;
 import com.algaworks.algamoney.api.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/categories")
@@ -23,6 +20,10 @@ public class CategoryResource {
     //INJETANDO IMPLEMENTACOES DO JPA PARA USO DOS METODOS DEFAULT EX.FINDALL, FIND BY ID.
     @Autowired
     private CategoryRepository categoryRepository;
+
+    //PUBLICADOR DOS EVENTOS DA APLICACAO
+    @Autowired
+    private ApplicationEventPublisher publisher;
 
     //anotacao para mapeamento dos gets
     @GetMapping
@@ -43,13 +44,11 @@ public class CategoryResource {
         Category createdCategory = categoryRepository.save(category);
 
         //ADD AO HEADER E URI A LOCATION COM DADOS DA ENTIDADE SALVA NO BANCO
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}")
-                .buildAndExpand(createdCategory.getId()).toUri();
-
-//        response.setHeader("Location", uri.toASCIIString());
+        //USANDO EVENT E LISTNER IMPLEMENTADOS COM RECURSOS DO SPRING E PUBLICANDO/ APLICANDO EVENTO COM O PUBLISHER
+        publisher.publishEvent(new ResourceCreatedEvent(this,response,createdCategory.getId()));
 
         //RETORNANDO OBJTO DA ENTITY CRIADA NO REPONSE BODY  E VALIDANDO O HTTP CODE DE RETORNO , ASSIM NAO SENDO NECESSARIO A ANOTACAO @responseStatus
-        return ResponseEntity.created(uri).body(createdCategory);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdCategory);
     }
 
     //GET POR PARAMETRO ID
