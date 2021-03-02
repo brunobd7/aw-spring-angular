@@ -57,5 +57,12 @@ public class PersonResource {
 
     }
 
+    //MPPING DELETE  , DEFINITION OF RESPONSE STATUS FOR SUCCESSFUL OPERATION AND NO DATA TO RETURN
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void remove(@PathVariable Integer id){
+        personRepository.deleteById(id);
+    }
+
 
 }
