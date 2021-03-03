@@ -65,4 +65,10 @@ public class CategoryResource {
 //        return categoryFounded.isPresent()
 //                ? ResponseEntity.ok(categoryFounded) : ResponseEntity.notFound().build();
     }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteById(@PathVariable Integer id){
+        categoryRepository.deleteById(id);
+    }
 }

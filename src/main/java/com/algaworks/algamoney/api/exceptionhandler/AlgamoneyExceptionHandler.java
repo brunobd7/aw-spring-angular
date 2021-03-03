@@ -3,6 +3,7 @@ package com.algaworks.algamoney.api.exceptionhandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -52,6 +54,20 @@ public class AlgamoneyExceptionHandler extends ResponseEntityExceptionHandler {
         //BINDING RESULT RETURN ALL ERROS ENVOLVED INTO EXCEPTION
         List<ErroAux> erros = createErrosList(ex.getBindingResult());
         return handleExceptionInternal(ex, erros, headers, HttpStatus.BAD_REQUEST, request);
+    }
+
+    //DEFININDO CAPTURA DE EXCEPTION ANOTANDO COM EXCEPTIONHANDLER E PASSAR ARRAY COM CLASSES COMO PARAMETROS DA ANOTATION
+    @ExceptionHandler({EmptyResultDataAccessException.class})
+//    @ResponseStatus(HttpStatus.NOT_FOUND) //retorna not found para solicitacao de um recurso que nao existe,
+//    caso nao queira retorno no body deixar somente anotacao e retorno do metodo void
+    public ResponseEntity<Object> handleEmptyResultDataAccessException(EmptyResultDataAccessException ex, WebRequest request){
+
+        //BUSCA MESSAGE PERSONLIZADA NO ARQUIVO messages.properties
+        String userMessage = messageSource.getMessage("recurso.nao-encontrado",null, LocaleContextHolder.getLocale());
+        String devMessage = ex.toString(); //exception direta , .getCause() nao necessaria
+        List<ErroAux> trackedErros = Arrays.asList(new ErroAux(userMessage,devMessage));
+
+        return handleExceptionInternal(ex, trackedErros, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
 
     //MOUNT LIST OF ERROS ENVOLVED INTO EXCEPTIONS
