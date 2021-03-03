@@ -3,8 +3,10 @@ package com.algaworks.algamoney.api.resource;
 import com.algaworks.algamoney.api.event.ResourceCreatedEvent;
 import com.algaworks.algamoney.api.model.Person;
 import com.algaworks.algamoney.api.repository.PersonRepository;
+import com.algaworks.algamoney.api.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,9 +19,14 @@ import java.util.List;
 @RequestMapping("/persons")
 public class PersonResource {
 
-    //JPA AUTO IMPLEMENTS CRUD METHODS
+    //JPA INJECT DEPENDENCES EX. AUTO IMPLEMENTS CRUD METHODS
     @Autowired
     PersonRepository personRepository;
+
+    //INJETANDO (com AUTOWIRED) A CLASSE SERVICE PERSON COM REGRAS DE NEGOCIOS
+    //SERVICE CLASS FOR PERSON ENTITY - CLASSE NEGOCIO / REGRAS DE NEGOCIO
+    @Autowired
+    PersonService personService;
 
     //PUBLICADOR DOS EVENTOS DA APLICACAO
     @Autowired
@@ -35,7 +42,11 @@ public class PersonResource {
     @GetMapping("/{id}")
     public ResponseEntity<Person> findPersonById(@PathVariable Integer id){
 
-        Person personFounded = personRepository.findById(id).orElse(null);
+        //TRATAMENTO DA EXCEPTION COM LAMBDA JAVA 8 DIRETO NO RETORNO
+        // DO OPTIONAL<PERSON> CASO NAO SEJA ENCONTRADA O OBJETO/PROPRIEDADE/ATRIBUTO
+        Person personFounded = personRepository.findById(id).orElseThrow(() -> new EmptyResultDataAccessException(1));
+
+        //remover validacao ternaria pois ja é tratado no resultado do finById NO optional de retoRNOA CIMA
         //HTTP VERBS TRATAMENT WIHT RETURNING RESPONSE ENTITY TYPING FROM MODEL
         return personFounded != null ? ResponseEntity.ok(personFounded) : ResponseEntity.notFound().build();
     }
@@ -60,8 +71,16 @@ public class PersonResource {
     //MPPING DELETE  , DEFINITION OF RESPONSE STATUS FOR SUCCESSFUL OPERATION AND NO DATA TO RETURN
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void remove(@PathVariable Integer id){
+    public void removePerson(@PathVariable Integer id){
         personRepository.deleteById(id);
+    }
+
+    @PutMapping("/{id}") //UPDATE DA ENTIDADE COMPLETA REPASSANDO TODOS ATRIBUTOS/CAMPOS
+    public ResponseEntity<Person> updatePerson(@PathVariable Integer id, @Valid @RequestBody Person person){
+
+        //ATUALIZANDO PESSOAS USANDO CLASSE DE SERVICO/NEGOCIO ONDE É VALIDADA AS REGRAS DE NEGOCIOS PERTINENTES A ENTIDADE PERSON
+        Person savedPerson = personService.updatePerson(id,person);
+        return  ResponseEntity.ok(savedPerson);
     }
 
 
