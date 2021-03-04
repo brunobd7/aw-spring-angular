@@ -19,6 +19,22 @@ public class PersonService {
 
     public Person updatePerson(Integer id, Person person){
 
+        Person savedPerson = getPersonById(id);
+
+        //BEANUTILS - CLASSE UTILITARIA PARA CLONAR PROPRIEDADES ENTRE OBJETOS
+        //copiando/atualizando os dados a serem atualizados de origem no requestBody para o objeto previamente salvo encontrado no banco
+        BeanUtils.copyProperties(person,savedPerson,"id");
+        return personRepository.save(savedPerson);
+
+    }
+
+    public void updatePropertieActive(Integer id, Boolean active) {
+        Person savedPerson = getPersonById(id);
+        savedPerson.setActive(active);
+        personRepository.save(savedPerson);
+    }
+
+    private Person getPersonById(Integer id) {
         //TRATAMENTO DA EXCEPTION COM LAMBDA JAVA 8 DIRETO NO RETORNO
         // DO OPTION<PERSON> CASO NAO SEJA ENCONTRADA O OBJETO/PROPRIEDADE/ATRIBUTO
         Person savedPerson = personRepository.findById(id).orElseThrow(() -> new EmptyResultDataAccessException(1));
@@ -27,11 +43,6 @@ public class PersonService {
         if(Objects.isNull(savedPerson)){
             throw new EmptyResultDataAccessException(1); //ESPERADO MINIMO 1 ELEMENTO OU ATRIBUTO , CALL HANDLER FOR THIS CLASS
         }*/
-
-        //BEANUTILS - CLASSE UTILITARIA PARA CLONAR PROPRIEDADES ENTRE OBJETOS
-        //copiando/atualizando os dados a serem atualizados de origem no requestBody para o objeto previamente salvo encontrado no banco
-        BeanUtils.copyProperties(person,savedPerson,"id");
-        return personRepository.save(savedPerson);
-
+        return savedPerson;
     }
 }

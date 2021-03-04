@@ -19,6 +19,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 //CONTROLLER QUE 'OBSERVA/ESCUTA' toda a aplicacao para tratamento das excecoes
 @ControllerAdvice
@@ -29,7 +30,7 @@ public class AlgamoneyExceptionHandler extends ResponseEntityExceptionHandler {
     @Autowired
     private MessageSource messageSource;
 
-    //TRATA EXCECOES DE REQUESTS QUE NAO PODEM SER LIDAS EX.CAMPO DESCONHECIDO
+    //TRATA EXCECOES DE REQUESTS QUE NAO PODEM SER LIDAS OU BODYS VAZIOS QUE  SAO OBRIGATORIAS EX.CAMPO DESCONHECIDO
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
                                                                   HttpHeaders headers, HttpStatus status, WebRequest request) {
@@ -39,7 +40,11 @@ public class AlgamoneyExceptionHandler extends ResponseEntityExceptionHandler {
         //ADD ARQUIVO PARA MENSAGENS PADROES E CHAMANDO PELO CODIGO DESIGNADO NO MESSAGE.PROPERTIES
         //LOCALE PODE SER CONFIGURADO PARA CADA LOCALIDADE EX.BR ,USA ,CHINA
         String userMessage = messageSource.getMessage("mensagem.invalida",null, LocaleContextHolder.getLocale());
-        String devMessage = ex.getCause().toString(); //CAUSA TECNICA DA EXCEPTION
+        String devMessage = Optional.ofNullable(ex.getCause()).orElse(ex).toString(); //OPTIONAL MELHOR LEGIBILIDADE UTIL JAVA 8
+
+//        String devMessage = ex.getCause()!=null
+//                ? ex.getCause().toString()
+//                : ex.toString(); //CAUSA TECNICA DA EXCEPTION
         List<ErroAux> trackedErros = Arrays.asList(new ErroAux(userMessage,devMessage));
 
         return handleExceptionInternal(ex, trackedErros, headers, HttpStatus.BAD_REQUEST, request);

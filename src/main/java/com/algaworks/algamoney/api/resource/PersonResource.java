@@ -83,5 +83,10 @@ public class PersonResource {
         return  ResponseEntity.ok(savedPerson);
     }
 
+    @PutMapping("/{id}/active")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updatePropertieActive(@PathVariable Integer id,@RequestBody Boolean active){
+        personService.updatePropertieActive(id,active);
+    }
 
 }
