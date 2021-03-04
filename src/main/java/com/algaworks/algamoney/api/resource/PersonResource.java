@@ -68,14 +68,16 @@ public class PersonResource {
 
     }
 
-    //MPPING DELETE  , DEFINITION OF RESPONSE STATUS FOR SUCCESSFUL OPERATION AND NO DATA TO RETURN
+    //MAPPING DELETE  , DEFINITION OF RESPONSE STATUS FOR SUCCESSFUL OPERATION AND NO DATA TO RETURN
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removePerson(@PathVariable Integer id){
         personRepository.deleteById(id);
     }
 
-    @PutMapping("/{id}") //UPDATE DA ENTIDADE COMPLETA REPASSANDO TODOS ATRIBUTOS/CAMPOS
+
+    //UPDATE DA ENTIDADE COMPLETA REPASSANDO TODOS ATRIBUTOS/CAMPOS
+    @PutMapping("/{id}")
     public ResponseEntity<Person> updatePerson(@PathVariable Integer id, @Valid @RequestBody Person person){
 
         //ATUALIZANDO PESSOAS USANDO CLASSE DE SERVICO/NEGOCIO ONDE É VALIDADA AS REGRAS DE NEGOCIOS PERTINENTES A ENTIDADE PERSON
@@ -83,6 +85,7 @@ public class PersonResource {
         return  ResponseEntity.ok(savedPerson);
     }
 
+    //PUT / UPDATE PARCIAL DE UMA PROPRIEDADE ADD TO PATH OF URI THE NAME OF FIELD/ATTRIBUTE/PROPERTIE
     @PutMapping("/{id}/active")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updatePropertieActive(@PathVariable Integer id,@RequestBody Boolean active){
