@@ -3,6 +3,7 @@ package com.algaworks.algamoney.api.resource;
 import com.algaworks.algamoney.api.event.ResourceCreatedEvent;
 import com.algaworks.algamoney.api.model.Category;
 import com.algaworks.algamoney.api.repository.CategoryRepository;
+import com.algaworks.algamoney.api.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,10 @@ public class CategoryResource {
     //INJETANDO IMPLEMENTACOES DO JPA PARA USO DOS METODOS DEFAULT EX.FINDALL, FIND BY ID.
     @Autowired
     private CategoryRepository categoryRepository;
+
+    //INJETANDO CLASSE DE NEGOCIO/SERVICO
+    @Autowired
+    CategoryService categoryService;
 
     //PUBLICADOR DOS EVENTOS DA APLICACAO
     @Autowired
@@ -70,5 +75,13 @@ public class CategoryResource {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteById(@PathVariable Integer id){
         categoryRepository.deleteById(id);
+    }
+
+
+    //UPDATE USING TOTAL ENTITY/OBJECT ATTRIBUTES/FIELDS
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateCategory(@PathVariable Integer id , @Valid @RequestBody Category category){
+        categoryService.updateCategory(id, category);
     }
 }
