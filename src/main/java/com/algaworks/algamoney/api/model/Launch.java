@@ -1,5 +1,7 @@
 package com.algaworks.algamoney.api.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -14,11 +16,14 @@ public class Launch {
     private Integer id;
 
     @Column(name = "pay_day")
+    @JsonFormat(pattern = "dd/MM/yyyy") //FORMATANDO DADOS DO PACTO java.time NO JSON  PARA O PATTERN DESEJADO
     private LocalDate payDay;
 
     @Column(name = "due_date")
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dueDate;
-    private BigDecimal value;
+
+    private BigDecimal amount;
     private String note;
 
     @Column(name = "launch_type")
@@ -58,12 +63,12 @@ public class Launch {
         this.dueDate = dueDate;
     }
 
-    public BigDecimal getValue() {
-        return value;
+    public BigDecimal getAmount() {
+        return amount;
     }
 
-    public void setValue(BigDecimal value) {
-        this.value = value;
+    public void setAmount(BigDecimal value) {
+        this.amount = value;
     }
 
     public String getNote() {

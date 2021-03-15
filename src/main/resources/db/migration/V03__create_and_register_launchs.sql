@@ -5,9 +5,9 @@ create table launch
             primary key,
     description varchar(50) not null,
     pay_day date not null,
-    due_date date not null,
+    due_date date,
     amount decimal(10,2) not null,
-    note varchar(100) not null,
+    note varchar(100),
     launch_type varchar(20) not null,
     id_category integer not null
         constraint launch_category_fk
