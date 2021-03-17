@@ -16,11 +16,11 @@ public class Launch {
     private Integer id;
 
     @Column(name = "pay_day")
-    @JsonFormat(pattern = "dd/MM/yyyy") //FORMATANDO DADOS DO PACTO java.time NO JSON  PARA O PATTERN DESEJADO
+    @JsonFormat(pattern = "dd-MM-yyyy") //FORMATANDO DADOS DO PACTO java.time NO JSON  PARA O PATTERN DESEJADO
     private LocalDate payDay;
 
     @Column(name = "due_date")
-    @JsonFormat(pattern = "dd/MM/yyyy")
+    @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate dueDate;
 
     private BigDecimal amount;
