@@ -1,6 +1,11 @@
 package com.algaworks.algamoney.api.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -15,12 +20,16 @@ public class Launch {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    private String description;
+
     @Column(name = "pay_day")
-    @JsonFormat(pattern = "dd-MM-yyyy") //FORMATANDO DADOS DO PACTO java.time NO JSON  PARA O PATTERN DESEJADO
+    @JsonFormat(pattern = "dd/MM/yyyy" ) //FORMATANDO DADOS DO PACTO java.time NO JSON  PARA O PATTERN DESEJADO
+//    @DateTimeFormat(pattern = "dd/MM/yyyy", iso = DateTimeFormat.ISO.DATE)
     private LocalDate payDay;
 
     @Column(name = "due_date")
-    @JsonFormat(pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "dd/MM/yyyy")
+//    @DateTimeFormat(pattern = "dd/MM/yyyy", iso = DateTimeFormat.ISO.DATE)
     private LocalDate dueDate;
 
     private BigDecimal amount;
@@ -101,6 +110,14 @@ public class Launch {
 
     public void setPerson(Person person) {
         this.person = person;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override
