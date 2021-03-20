@@ -23,13 +23,13 @@ public class Launch {
     private String description;
 
     @Column(name = "pay_day")
-    @JsonFormat(pattern = "dd/MM/yyyy" ) //FORMATANDO DADOS DO PACTO java.time NO JSON  PARA O PATTERN DESEJADO
-//    @DateTimeFormat(pattern = "dd/MM/yyyy", iso = DateTimeFormat.ISO.DATE)
+//    @JsonFormat(pattern = "dd/MM/yyyy" ) //FORMATANDO DADOS DO PACTO java.time NO JSON  PARA O PATTERN DESEJADO -- NAO RECONHECENDO VERIFICAR DPS
+    @DateTimeFormat(pattern = "dd/MM/yyyy", iso = DateTimeFormat.ISO.DATE)
     private LocalDate payDay;
 
     @Column(name = "due_date")
-    @JsonFormat(pattern = "dd/MM/yyyy")
-//    @DateTimeFormat(pattern = "dd/MM/yyyy", iso = DateTimeFormat.ISO.DATE)
+//    @JsonFormat(pattern = "dd/MM/yyyy")
+    @DateTimeFormat(pattern = "dd/MM/yyyy", iso = DateTimeFormat.ISO.DATE)
     private LocalDate dueDate;
 
     private BigDecimal amount;
