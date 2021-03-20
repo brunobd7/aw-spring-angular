@@ -8,6 +8,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
@@ -20,8 +21,10 @@ public class Launch {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotNull
     private String description;
 
+    @NotNull
     @Column(name = "pay_day")
 //    @JsonFormat(pattern = "dd/MM/yyyy" ) //FORMATANDO DADOS DO PACTO java.time NO JSON  PARA O PATTERN DESEJADO -- NAO RECONHECENDO VERIFICAR DPS
     @DateTimeFormat(pattern = "dd/MM/yyyy", iso = DateTimeFormat.ISO.DATE)
@@ -32,17 +35,21 @@ public class Launch {
     @DateTimeFormat(pattern = "dd/MM/yyyy", iso = DateTimeFormat.ISO.DATE)
     private LocalDate dueDate;
 
+    @NotNull
     private BigDecimal amount;
     private String note;
 
+    @NotNull
     @Column(name = "launch_type")
     @Enumerated(EnumType.STRING) // SALVA STRING DO ENUM
     private LaunchType launchType;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "id_category")
     private Category category;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "id_person")
     private Person person;

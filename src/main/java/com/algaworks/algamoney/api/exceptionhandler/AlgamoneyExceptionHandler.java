@@ -1,8 +1,10 @@
 package com.algaworks.algamoney.api.exceptionhandler;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -73,6 +75,18 @@ public class AlgamoneyExceptionHandler extends ResponseEntityExceptionHandler {
         List<ErroAux> trackedErros = Arrays.asList(new ErroAux(userMessage,devMessage));
 
         return handleExceptionInternal(ex, trackedErros, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+    }
+
+    //HANDLE EXCEPTION ON FK IS NOT PRESENT INTO TARGET TABLE
+    @ExceptionHandler({DataIntegrityViolationException.class})
+    public ResponseEntity<Object> handleDataIntegrityViolationException(DataIntegrityViolationException ex, WebRequest request){
+
+        String userMessage = messageSource.getMessage("recurso.operacao-nao-permitida",null,LocaleContextHolder.getLocale());
+//        String devMessage = ex.toString();
+        String devMessage = ExceptionUtils.getRootCauseMessage(ex); //USANDO LIB APACHE PARA DETALHAR EXECAO SQL NA CAPTURA DO ERRO
+        List<ErroAux> trackedErros = Arrays.asList(new ErroAux(userMessage,devMessage));
+
+        return handleExceptionInternal(ex,trackedErros,new HttpHeaders(),HttpStatus.BAD_REQUEST,request);
     }
 
     //MOUNT LIST OF ERROS ENVOLVED INTO EXCEPTIONS
