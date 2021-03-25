@@ -1,5 +1,7 @@
 package com.algaworks.algamoney.api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -21,6 +23,13 @@ public class Person {
 
     @Embedded
     private Andress andress;
+
+
+    @JsonIgnore //IGNORA VERIFICACAO JACKSON E NAO INTERPRETA COMO PROPERTIE NO JSON
+    @Transient // HIBERNATE INGNORA COMO ATRIBUTO
+    public Boolean isInactive(){
+        return !this.active;
+    }
 
     //GETS AND SETTERS
     public Integer getId() {

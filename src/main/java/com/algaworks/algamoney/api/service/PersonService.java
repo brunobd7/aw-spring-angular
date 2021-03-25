@@ -34,7 +34,7 @@ public class PersonService {
         personRepository.save(savedPerson);
     }
 
-    private Person getPersonById(Integer id) {
+    public Person getPersonById(Integer id) {
         //TRATAMENTO DA EXCEPTION COM LAMBDA JAVA 8 DIRETO NO RETORNO
         // DO OPTION<PERSON> CASO NAO SEJA ENCONTRADA O OBJETO/PROPRIEDADE/ATRIBUTO
         Person savedPerson = personRepository.findById(id).orElseThrow(() -> new EmptyResultDataAccessException(1));

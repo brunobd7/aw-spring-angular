@@ -42,7 +42,7 @@ public class LaunchResource {
     @PostMapping
     public ResponseEntity<Launch> createLaunch(@Valid @RequestBody Launch launch, HttpServletResponse httpServletResponse){
 
-        Launch savedLaunch = launchRespository.save(launch);
+        Launch savedLaunch = launchService.save(launch);
 
         publisher.publishEvent(new ResourceCreatedEvent(savedLaunch,httpServletResponse, savedLaunch.getId()));
 
