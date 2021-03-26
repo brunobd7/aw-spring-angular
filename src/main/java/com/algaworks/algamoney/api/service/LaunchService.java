@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 public class LaunchService {
 
     @Autowired
-    LaunchRespository launchRespository;
+    private LaunchRespository launchRespository;
 
     @Autowired
     private PersonRepository personRepository;
@@ -22,10 +22,10 @@ public class LaunchService {
 
         Person person = personRepository.getOne(launch.getPerson().getId());
 
-        if( person == null || person.isInactive()){
+        if( person == null || person.isInactive()){ //TRATAMENTO PARA SOMENTE TER LANCAMENTO POR PESSOAS ATIVAS
             throw new NotPresentOrInactivePersonException();
         }
-        return null;
+        return launchRespository.save(launch);
     }
 
     public Launch findLaunchById(Integer id){
