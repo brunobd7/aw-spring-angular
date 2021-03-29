@@ -20,7 +20,6 @@ public class LaunchService {
 
     public Launch save(Launch launch){
 
-//        Person person = personRepository.getOne(launch.getPerson().getId());
         Person person = personRepository.findById(launch.getPerson().getId()).orElse(null);
 
         if( person == null || person.isInactive()){ //TRATAMENTO PARA SOMENTE TER LANCAMENTO POR PESSOAS ATIVAS
