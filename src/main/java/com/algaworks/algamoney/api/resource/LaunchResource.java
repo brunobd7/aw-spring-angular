@@ -4,13 +4,13 @@ import com.algaworks.algamoney.api.event.ResourceCreatedEvent;
 import com.algaworks.algamoney.api.exceptionhandler.AlgamoneyExceptionHandler;
 import com.algaworks.algamoney.api.model.Launch;
 import com.algaworks.algamoney.api.repository.LaunchRespository;
+import com.algaworks.algamoney.api.repository.filter.LaunchFilter;
 import com.algaworks.algamoney.api.service.LaunchService;
 import com.algaworks.algamoney.api.service.exception.NotPresentOrInactivePersonException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,7 +37,7 @@ public class LaunchResource {
     MessageSource messageSource;
 
     @GetMapping
-    public List<Launch> findAllLaunches(){
+    public List<Launch> search(LaunchFilter launchFilter){
         return launchRespository.findAll();
     }
 
