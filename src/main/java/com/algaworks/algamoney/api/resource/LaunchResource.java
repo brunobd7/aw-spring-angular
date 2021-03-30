@@ -70,4 +70,11 @@ public class LaunchResource {
         return ResponseEntity.badRequest().body(trackedErros);
     }
 
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Launch> deleteLaunch(@PathVariable Integer id){
+        launchRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }
