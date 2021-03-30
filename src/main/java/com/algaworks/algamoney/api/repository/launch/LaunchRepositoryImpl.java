@@ -3,6 +3,9 @@ package com.algaworks.algamoney.api.repository.launch;
 import com.algaworks.algamoney.api.model.Launch;
 import com.algaworks.algamoney.api.model.Launch_;
 import com.algaworks.algamoney.api.repository.filter.LaunchFilter;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
@@ -24,7 +27,7 @@ public class LaunchRepositoryImpl implements LaunchRepositoryQuery {
 
     //MONTA UMA QUERY PARA CONSULTA PERSONALIZADA USANDO O JPA CRITERIA
     @Override
-    public List<Launch> filter(LaunchFilter launchFilter) {
+    public Page<Launch> filter(LaunchFilter launchFilter, Pageable pageable) {
 
         //construtor de criterias
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -39,12 +42,20 @@ public class LaunchRepositoryImpl implements LaunchRepositoryQuery {
 
         //CRIANDO QUERY usando a CRITERIA
         TypedQuery<Launch> query = entityManager.createQuery(criteriaQuery);
+
         //RETORNANDO RESULTADO DA CRITERIA QUERY
-        return query.getResultList();
+//        return query.getResultList();
+
+        //TRATAMENTO DE PAGINACAO
+        createPaginationRestricts(query,pageable);
+
+        // RETORNANDO RESULTADO COM PAGINACAO
+        return new PageImpl<>(query.getResultList(), pageable,total(launchFilter));
     }
 
     //RETORNA OS ATRIBUTOS DO "LANCAMENTO" QUE SERÃO USADOS PARA FILTRAR
     //TOTALMENTE BASEADO NO DADOS DO FILTER PASSADO POR PARAMETRO
+
     private Predicate[] createRestrictsForFilter(LaunchFilter launchFilter, CriteriaBuilder criteriaBuilder, Root<Launch> root) {
 
         List<Predicate> predicatesList = new ArrayList<>();
@@ -85,5 +96,28 @@ public class LaunchRepositoryImpl implements LaunchRepositoryQuery {
         }
 
         return predicatesList.toArray(new Predicate[predicatesList.size()]);
+    }
+
+    private void createPaginationRestricts(TypedQuery<Launch> query, Pageable pageable) {
+        Integer currentPage = pageable.getPageNumber();
+        Integer maxPageSize = pageable.getPageSize();
+        Integer firstRowOfPage = currentPage * maxPageSize;
+
+        query.setFirstResult(firstRowOfPage);
+        query.setMaxResults(maxPageSize);
+    }
+
+    private Long total(LaunchFilter launchFilter) {
+        //construtor de criterias
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+
+        Root<Launch> root = criteriaQuery.from(Launch.class); //SQL - FROM LAUNCH
+
+        Predicate[] predicates = createRestrictsForFilter(launchFilter, criteriaBuilder, root); // SQL - WHERE
+        criteriaQuery.where(predicates);
+
+        criteriaQuery.select(criteriaBuilder.count(root)); //COUNT *
+        return entityManager.createQuery(criteriaQuery).getSingleResult(); // retorna contagem
     }
 }
