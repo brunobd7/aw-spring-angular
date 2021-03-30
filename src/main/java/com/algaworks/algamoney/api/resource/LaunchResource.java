@@ -3,7 +3,7 @@ package com.algaworks.algamoney.api.resource;
 import com.algaworks.algamoney.api.event.ResourceCreatedEvent;
 import com.algaworks.algamoney.api.exceptionhandler.AlgamoneyExceptionHandler;
 import com.algaworks.algamoney.api.model.Launch;
-import com.algaworks.algamoney.api.repository.LaunchRespository;
+import com.algaworks.algamoney.api.repository.LaunchRepository;
 import com.algaworks.algamoney.api.repository.filter.LaunchFilter;
 import com.algaworks.algamoney.api.service.LaunchService;
 import com.algaworks.algamoney.api.service.exception.NotPresentOrInactivePersonException;
@@ -25,7 +25,7 @@ import java.util.List;
 public class LaunchResource {
 
     @Autowired
-    LaunchRespository launchRespository; //JPA INJECTION
+    LaunchRepository launchRepository; //JPA INJECTION
 
     @Autowired
     LaunchService launchService; //BUSINESS RULES
@@ -38,7 +38,7 @@ public class LaunchResource {
 
     @GetMapping
     public List<Launch> search(LaunchFilter launchFilter){
-        return launchRespository.findAll();
+        return launchRepository.filter(launchFilter);
     }
 
     @GetMapping("/{id}")

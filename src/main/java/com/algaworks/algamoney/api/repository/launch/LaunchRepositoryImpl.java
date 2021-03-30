@@ -1,6 +1,7 @@
 package com.algaworks.algamoney.api.repository.launch;
 
 import com.algaworks.algamoney.api.model.Launch;
+import com.algaworks.algamoney.api.model.Launch_;
 import com.algaworks.algamoney.api.repository.filter.LaunchFilter;
 import org.springframework.util.StringUtils;
 
@@ -52,9 +53,18 @@ public class LaunchRepositoryImpl implements LaunchRepositoryQuery {
         //EX. "where description like '%atributo filtro%'"
         if(!StringUtils.isEmpty(launchFilter.getDescription())){
 
-            predicatesList.add(
+            //SEM METAMODELS SUJEITO A ERRIS PASSANDO ATRIBUTOS "root.get" MANUAIS
+            /*predicatesList.add(
                     criteriaBuilder.like(
                             criteriaBuilder.lower(root.get("description")),
+                            "%"+ launchFilter.getDescription() + "%"
+                            )
+            );*/
+
+            //COM METAMODELS
+            predicatesList.add(
+                    criteriaBuilder.like(
+                            criteriaBuilder.lower(root.get(Launch_.description)),
                             "%"+ launchFilter.getDescription() + "%"
                             )
             );
@@ -62,11 +72,15 @@ public class LaunchRepositoryImpl implements LaunchRepositoryQuery {
 
         //VENCIMENTO DE
         if(launchFilter.getDueDate() != null){
-//            predicatesList.add()
+            predicatesList.add(
+                    criteriaBuilder.greaterThanOrEqualTo(root.get(Launch_.dueDate), launchFilter.getDueDate())
+            );
         }
         //VENCIMENTO ATE
         if(launchFilter.getExpirationDate() != null){
-//            predicatesList.add()
+            predicatesList.add(
+                    criteriaBuilder.lessThanOrEqualTo(root.get(Launch_.dueDate), launchFilter.getExpirationDate())
+            );
 
         }
 
