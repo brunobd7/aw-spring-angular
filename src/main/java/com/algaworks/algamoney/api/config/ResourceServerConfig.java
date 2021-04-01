@@ -23,7 +23,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
         //AUTENTICACAO EM MEMORIA PARA TESTE
         //ROLES PARA AUTORIZACAO
         auth.inMemoryAuthentication()
-                .withUser("admin").password("{noop}admin").roles("ROLE");
+                .withUser("admin").password("admin").roles("ROLE");
     }
 
     @Override

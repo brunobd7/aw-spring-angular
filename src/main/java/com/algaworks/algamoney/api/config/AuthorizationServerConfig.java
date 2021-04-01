@@ -4,6 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
@@ -35,10 +39,10 @@ public class AuthorizationServerConfig  extends AuthorizationServerConfigurerAda
 
         clients.inMemory()
                 .withClient("angular")
-                .secret("@angul@r")
-                .scopes("write","read")
-                .authorizedGrantTypes("password")
-                .accessTokenValiditySeconds(1800);
+                .secret("@ngul@r")
+                .scopes("write","read") // SCOPE OBRIGATORIO
+                .authorizedGrantTypes("password") //PASSWORD FLOW DOCUMENTACAO OAUTH2
+                .accessTokenValiditySeconds(1800); // % por 60 = 30 minutos - validade do token
     }
 
     @Override
