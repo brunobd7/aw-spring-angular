@@ -4,16 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
+import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
 //OATUH2 AUTHORIZATION SERVER TO COMUNICATION AND ENABLE ACCESS TO CLIENT INTO RESOURCE SERVER(MODELS, METHODS, FUNCTIONS)
 @Configuration
@@ -50,11 +47,30 @@ public class AuthorizationServerConfig  extends AuthorizationServerConfigurerAda
 
         endpoints
                 .tokenStore(tokenStore()) //ARMAZENA O TOKEN GERADO PELO  AUTHORIZATION SERVER PARA OS DEVIDOS ACESSOS
+                .accessTokenConverter(accessTokenConverter()) //GERANDO ACCESS TOKEN CONVERTER
                 .authenticationManager(authenticationManager); // INTERFACE INJETADA VALIDA A AUTENTICACAO CONFORME PARAMETRIZADO NO RESOURCE SERVER
+    }
+
+    /**GERANDO ACCESS TOKEN CONVERTER
+     *@Bean e public para ser visualizado e acessivel no escopo do projeto para sempre que necessario
+     * usar um token converter estar disponivel
+     * @setSingKey chave/senha que valida o TOKEN o na sessao SIGNATURE no decode do JWT*/
+    @Bean
+    public JwtAccessTokenConverter accessTokenConverter() {
+        JwtAccessTokenConverter accessTokenConverter = new JwtAccessTokenConverter();
+        accessTokenConverter.setSigningKey("algaworks"); //CHAVE/SENHA que valida o token na sessao SIGNATURE
+        return accessTokenConverter;
     }
 
     @Bean
     public TokenStore tokenStore() {
-        return new InMemoryTokenStore(); // SALVANDO O TOKE EM MEMORIA
+        return new JwtTokenStore(accessTokenConverter());
     }
+
+    /**SALVANDO O TOKEN EM MEMORIA*/
+//    @Bean
+//    public TokenStore tokenStore() {
+//        return new InMemoryTokenStore();
+//    }
+
 }
