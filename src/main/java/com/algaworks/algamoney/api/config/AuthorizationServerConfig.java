@@ -38,8 +38,9 @@ public class AuthorizationServerConfig  extends AuthorizationServerConfigurerAda
                 .withClient("angular")
                 .secret("@ngul@r")
                 .scopes("write","read") // SCOPE OBRIGATORIO
-                .authorizedGrantTypes("password") //PASSWORD FLOW DOCUMENTACAO OAUTH2
-                .accessTokenValiditySeconds(1800); // % por 60 = 30 minutos - validade do token
+                .authorizedGrantTypes("password","refresh_token") //PASSWORD FLOW DOCUMENTACAO OAUTH2
+                .accessTokenValiditySeconds(30) // % por 60 = 30 minutos - validade do token
+                .refreshTokenValiditySeconds(3600*24); //VALIDADE DO REFRESH TOKEN
     }
 
     @Override
@@ -48,6 +49,7 @@ public class AuthorizationServerConfig  extends AuthorizationServerConfigurerAda
         endpoints
                 .tokenStore(tokenStore()) //ARMAZENA O TOKEN GERADO PELO  AUTHORIZATION SERVER PARA OS DEVIDOS ACESSOS
                 .accessTokenConverter(accessTokenConverter()) //GERANDO ACCESS TOKEN CONVERTER
+                .reuseRefreshTokens(false) // DESABILITA O REUSO DO REFRESH TOKEN SEMPRE GERANDO UM NOVO
                 .authenticationManager(authenticationManager); // INTERFACE INJETADA VALIDA A AUTENTICACAO CONFORME PARAMETRIZADO NO RESOURCE SERVER
     }
 
