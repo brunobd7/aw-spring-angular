@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 // DE ACORDO COM O OBJETO GENERICO PASSADO (OAuth2AccessToken)
 // NO PARAMETRO DA INTERFACE RESPONSEBODYADVICE<T>
 @ControllerAdvice
-public class RefreshTokenProcessor implements ResponseBodyAdvice<OAuth2AccessToken> {
+public class RefreshTokenPostProcessor implements ResponseBodyAdvice<OAuth2AccessToken> {
 
     /**
      * APLICANDO CONDICAO PARA INTERCEPETACAO SOMENTE QUANDO UM POST FOR EXECUTADO PARA RETORNAR UM ACCESS TOKEN
