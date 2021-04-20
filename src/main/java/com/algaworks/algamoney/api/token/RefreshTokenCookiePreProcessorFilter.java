@@ -26,7 +26,7 @@ public class RefreshTokenCookiePreProcessorFilter implements Filter {
         //Verifica se request e direcionada a oauth/token
         // e se o gran_type  é referente ao refresh_token
         //e se possui o refresh token no cookie
-        if("/oauth/token/".equalsIgnoreCase(req.getRequestURI())
+        if("/oauth/token".equalsIgnoreCase(req.getRequestURI())
                 && "refresh_token".equals(req.getParameter("grant_type"))
                 && req.getCookies() !=null){
 
