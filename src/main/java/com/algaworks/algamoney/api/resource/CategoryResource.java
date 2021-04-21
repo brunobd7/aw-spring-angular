@@ -30,7 +30,8 @@ public class CategoryResource {
     @Autowired
     private ApplicationEventPublisher publisher;
 
-    //anotacao para mapeamento dos gets
+    // HABILITA CORS - permitindo solicitacoes de origens diferentes da aplicacao atual
+//    @CrossOrigin (maxAge = 10 , origins = {"http://localhost:8000"})
     @GetMapping
     public List<Category> listAll(){
         return categoryRepository.findAll();
