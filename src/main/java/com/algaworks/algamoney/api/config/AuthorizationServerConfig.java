@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
@@ -21,6 +22,9 @@ public class AuthorizationServerConfig  extends AuthorizationServerConfigurerAda
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    //ATT PARA APLICAR VALIDACAO DO USUARIO NO BANCO E NAO MAIS EM MEMORIA
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     /**
      * CONFIGURA A AUTORIZACAO DO CLIENTE(PLATAFORMA, SISTEMA , MEIO DE ACESSO) QUE
@@ -36,7 +40,8 @@ public class AuthorizationServerConfig  extends AuthorizationServerConfigurerAda
 
         clients.inMemory()
                 .withClient("angular")
-                .secret("@ngul@r")
+                .secret("$2a$10$zxVDBy0gHfi2E8SLWSLaC.RYdSm9DsOlHGe9oxkqrqHn6d9CHL/xW") //NOVA SENHA ENCODADA COM BCRYPT ENCODERs
+//                .secret("@ngul@r")
                 .scopes("write","read") // SCOPE OBRIGATORIO
                 .authorizedGrantTypes("password","refresh_token") //PASSWORD FLOW DOCUMENTACAO OAUTH2
                 .accessTokenValiditySeconds(30) // % por 60 = 30 minutos - validade do token
@@ -50,6 +55,8 @@ public class AuthorizationServerConfig  extends AuthorizationServerConfigurerAda
                 .tokenStore(tokenStore()) //ARMAZENA O TOKEN GERADO PELO  AUTHORIZATION SERVER PARA OS DEVIDOS ACESSOS
                 .accessTokenConverter(accessTokenConverter()) //GERANDO ACCESS TOKEN CONVERTER
                 .reuseRefreshTokens(false) // DESABILITA O REUSO DO REFRESH TOKEN SEMPRE GERANDO UM NOVO
+                //ATT PARA VALIDAR USUARIO E SENHA NO BANCO DE DADOS
+                .userDetailsService(this.userDetailsService)
                 .authenticationManager(authenticationManager); // INTERFACE INJETADA VALIDA A AUTENTICACAO CONFORME PARAMETRIZADO NO RESOURCE SERVER
     }
 
