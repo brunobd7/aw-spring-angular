@@ -28,7 +28,7 @@ public class OAuthSecurityConfig extends WebSecurityConfigurerAdapter {
      * que será usado para fazer o decode da senha do usuário e da secret do cliente(web / mobile): */
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-//        return NoOpPasswordEncoder.getInstance(); //PARA UTILIZACAO SEM ENCODER
+//        return new BCryptPasswordEncoder();
+        return NoOpPasswordEncoder.getInstance(); //PARA UTILIZACAO SEM ENCODER
     }
 }

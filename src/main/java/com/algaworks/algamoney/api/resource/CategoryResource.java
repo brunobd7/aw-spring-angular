@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -31,8 +32,14 @@ public class CategoryResource {
     private ApplicationEventPublisher publisher;
 
     // HABILITA CORS - permitindo solicitacoes de origens diferentes da aplicacao atual
-//    @CrossOrigin (maxAge = 10 , origins = {"http://localhost:8000"})
+    //@CrossOrigin (maxAge = 10 , origins = {"http://localhost:8000"})
+    /** ANNOTATION
+     * @PreAuthorize PARA TRATAMENTO POR PERMISSAO DO USUÁRIO E ESCOPO DE ACESSO APP CLIENTE
+     * DEFINIDA NA CLASSE AUTHORIZATION SERVER CONFIG
+     * */
     @GetMapping
+    @PreAuthorize("hasAuthority('ROLE_PESQUISAR_CATEGORIA') " +
+            "and #oauth2.hasScope('read')")
     public List<Category> listAll(){
         return categoryRepository.findAll();
     }
@@ -44,7 +51,12 @@ public class CategoryResource {
 
     //PostMapping anotacao para mapeamento dos metodos que atendente requisicoes POST
     //@RequesteBody usado para pegar valor do body do json de origem do post
+    /** ANNOTATION
+     * @PreAuthorize PARA TRATAMENTO POR PERMISSAO DO USUÁRIO E ESCOPO DE ACESSO APP CLIENTE
+     * DEFINIDA NA CLASSE AUTHORIZATION SERVER CONFIG
+     * */
     @PostMapping
+    @PreAuthorize("hasAuthority('ROLE_CADASTRAR_CATEGORIA') and #oauth2.hasScope('write')")
 //    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Category> create(@Valid @RequestBody Category category , HttpServletResponse response){
         Category createdCategory = categoryRepository.save(category);
@@ -60,6 +72,7 @@ public class CategoryResource {
     //GET POR PARAMETRO ID
     //@PATHVARIABLE PERMITE QUE O ATRIBUTO PASSADO PELA URI/URL SEJA UTILIZADO
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_PESQUISAR_CATEGORIA') and #oauth2.hasScope('read')")
     public ResponseEntity findByCode(@PathVariable Integer id){
 //        return categoryRepository.findById(id).orElse(new Category());
 
