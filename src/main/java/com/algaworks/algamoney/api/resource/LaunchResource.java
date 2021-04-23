@@ -5,6 +5,7 @@ import com.algaworks.algamoney.api.exceptionhandler.AlgamoneyExceptionHandler;
 import com.algaworks.algamoney.api.model.Launch;
 import com.algaworks.algamoney.api.repository.LaunchRepository;
 import com.algaworks.algamoney.api.repository.filter.LaunchFilter;
+import com.algaworks.algamoney.api.repository.projection.LaunchResume;
 import com.algaworks.algamoney.api.service.LaunchService;
 import com.algaworks.algamoney.api.service.exception.NotPresentOrInactivePersonException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,14 @@ public class LaunchResource {
     @PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
     public Page<Launch> search(LaunchFilter launchFilter, Pageable pageable){
         return launchRepository.filter(launchFilter, pageable);
+    }
+    /**TRATANDO PROJECAO / RESUMINDO INFOR USANDO CRITERIA
+     * SE HOUVER PASSAGEM DE PARAMETRO 'RESUME' RETORNO O RESUMO DOS DADO PELA CRITERIA SENAO OUTRO GET MAPPING É INVOCADO
+     * */
+    @GetMapping(params = "resume")
+    @PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
+    public Page<LaunchResume> resume(LaunchFilter launchFilter, Pageable pageable){
+        return launchRepository.resume(launchFilter, pageable);
     }
 
     @GetMapping("/{id}")

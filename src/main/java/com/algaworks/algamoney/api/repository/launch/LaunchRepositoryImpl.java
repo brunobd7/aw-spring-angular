@@ -1,8 +1,11 @@
 package com.algaworks.algamoney.api.repository.launch;
 
+import com.algaworks.algamoney.api.model.Category_;
 import com.algaworks.algamoney.api.model.Launch;
 import com.algaworks.algamoney.api.model.Launch_;
+import com.algaworks.algamoney.api.model.Person_;
 import com.algaworks.algamoney.api.repository.filter.LaunchFilter;
+import com.algaworks.algamoney.api.repository.projection.LaunchResume;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -53,9 +56,43 @@ public class LaunchRepositoryImpl implements LaunchRepositoryQuery {
         return new PageImpl<>(query.getResultList(), pageable,total(launchFilter));
     }
 
+    /**PROJECAO / RESUMO DADOS COM ORIGEM NA MODEL LAUNCH*/
+    @Override
+    public Page<LaunchResume> resume(LaunchFilter launchFilter, Pageable pageable) {
+
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<LaunchResume> criteriaQuery = criteriaBuilder.createQuery(LaunchResume.class);
+        Root<Launch> root = criteriaQuery.from(Launch.class);
+
+        criteriaQuery.select(criteriaBuilder.construct(LaunchResume.class,
+                root.get(Launch_.id),root.get(Launch_.description),root.get(Launch_.payDay),
+                root.get(Launch_.dueDate),root.get(Launch_.amount),root.get(Launch_.note),
+                root.get(Launch_.launchType),
+                root.get(Launch_.category).get(Category_.name),
+                root.get(Launch_.person).get(Person_.name)
+        ));
+
+
+        //CRIAR RESTRIÇOES / ATRIBUTOS QUE COMPOEM O "WHERE" DE QUERY TRADICIONAL PARA A FILTRAGEM DOS DADOS
+        Predicate[] predicates = createRestrictsForFilter(launchFilter , criteriaBuilder , root);
+        criteriaQuery.where(predicates);
+
+        //CRIANDO QUERY usando a CRITERIA
+        TypedQuery<LaunchResume> query = entityManager.createQuery(criteriaQuery);
+
+        //RETORNANDO RESULTADO 'LIMPO' DA CRITERIA QUERY SEM TRATAMENTO DE PAGINACAO
+//        return query.getResultList();
+
+        //TRATAMENTO DE PAGINACAO
+
+        createPaginationRestricts(query,pageable);
+
+        // RETORNANDO RESULTADO COM PAGINACAO
+        return new PageImpl<>(query.getResultList(), pageable,total(launchFilter));
+    }
+
     //RETORNA OS ATRIBUTOS DO "LANCAMENTO" QUE SERÃO USADOS PARA FILTRAR
     //TOTALMENTE BASEADO NO DADOS DO FILTER PASSADO POR PARAMETRO
-
     private Predicate[] createRestrictsForFilter(LaunchFilter launchFilter, CriteriaBuilder criteriaBuilder, Root<Launch> root) {
 
         List<Predicate> predicatesList = new ArrayList<>();
@@ -98,7 +135,8 @@ public class LaunchRepositoryImpl implements LaunchRepositoryQuery {
         return predicatesList.toArray(new Predicate[predicatesList.size()]);
     }
 
-    private void createPaginationRestricts(TypedQuery<Launch> query, Pageable pageable) {
+    /**ALTERADO PARA '?' TIPO GENERICO PARA ACEITAR DE DIVERSAR MODEL PARA PAGINACAO*/
+    private void createPaginationRestricts(TypedQuery<?> query, Pageable pageable) {
         Integer currentPage = pageable.getPageNumber();
         Integer maxPageSize = pageable.getPageSize();
         Integer firstRowOfPage = currentPage * maxPageSize;

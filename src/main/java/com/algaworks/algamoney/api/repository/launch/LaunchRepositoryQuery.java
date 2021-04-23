@@ -2,6 +2,7 @@ package com.algaworks.algamoney.api.repository.launch;
 
 import com.algaworks.algamoney.api.model.Launch;
 import com.algaworks.algamoney.api.repository.filter.LaunchFilter;
+import com.algaworks.algamoney.api.repository.projection.LaunchResume;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -11,4 +12,5 @@ import org.springframework.data.domain.Pageable;
 public interface LaunchRepositoryQuery {
 
     public Page<Launch> filter(LaunchFilter launchFilter, Pageable pageable);
+    public Page<LaunchResume> resume(LaunchFilter launchFilter, Pageable pageable);
 }
