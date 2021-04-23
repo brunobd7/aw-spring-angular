@@ -44,7 +44,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 //                    .secret("@ngul@r")
                     .secret("$2a$10$zxVDBy0gHfi2E8SLWSLaC.RYdSm9DsOlHGe9oxkqrqHn6d9CHL/xW") //NOVA SENHA ENCODADA COM BCRYPT ENCODERs
                     .scopes("write", "read")  /** SCOPE DE PERMISSAO DE ACESSO DO APP CLIENTE - OBRIGATORIO*/
-                    .authorizedGrantTypes("password", "refresh_token") /**PASSWORD FLOW DOCUMENTACAO OAUTH2*/
+                    .authorizedGrantTypes("password", "refresh_token") /**PASSWORD FLOW  HABILITANDO O RESFRESH TOKEN DOCUMENTACAO OAUTH2*/
                     .accessTokenValiditySeconds(1800) // VALIDADE DO ACCESSES TOKEN EM SEGUNDOS
                     .refreshTokenValiditySeconds(3600 * 24) //VALIDADE DO REFRESH TOKEN
                 .and()
