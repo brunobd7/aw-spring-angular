@@ -75,6 +75,7 @@ public class PersonResource {
     //MAPPING DELETE  , DEFINITION OF RESPONSE STATUS FOR SUCCESSFUL OPERATION AND NO DATA TO RETURN
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAuthority('ROLE_REMOVER_PESSOA') and #oauth2.hasScope('write')")
     public void removePerson(@PathVariable Integer id){
         personRepository.deleteById(id);
     }
@@ -82,6 +83,7 @@ public class PersonResource {
 
     //UPDATE DA ENTIDADE COMPLETA REPASSANDO TODOS ATRIBUTOS/CAMPOS
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_CADASTRAR_PESSOA') and #oauth2.hasScope('write')")
     public ResponseEntity<Person> updatePerson(@PathVariable Integer id, @Valid @RequestBody Person person){
 
         //ATUALIZANDO PESSOAS USANDO CLASSE DE SERVICO/NEGOCIO ONDE É VALIDADA AS REGRAS DE NEGOCIOS PERTINENTES A ENTIDADE PERSON
@@ -92,6 +94,7 @@ public class PersonResource {
     //PUT / UPDATE PARCIAL DE UMA PROPRIEDADE ADD TO PATH OF URI THE NAME OF FIELD/ATTRIBUTE/PROPERTIE
     @PutMapping("/{id}/active")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAuthority('ROLE_CADASTRAR_PESSOA') and #oauth2.hasScope('write')")
     public void updatePropertieActive(@PathVariable Integer id,@RequestBody Boolean active){
         personService.updatePropertieActive(id,active);
     }

@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -39,17 +40,20 @@ public class LaunchResource {
     MessageSource messageSource;
 
     @GetMapping
+    @PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
     public Page<Launch> search(LaunchFilter launchFilter, Pageable pageable){
         return launchRepository.filter(launchFilter, pageable);
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
     public ResponseEntity<Launch> findLaunchById(@PathVariable Integer id){
         Launch savedLaunch = launchService.findLaunchById(id); //SERVICE FOR BUSINESS RULES
         return savedLaunch != null ? ResponseEntity.ok(savedLaunch) : ResponseEntity.notFound().build();
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ROLE_CADASTRAR_LANCAMENTO') and #oauth2.hasScope('write')")
     public ResponseEntity<Launch> createLaunch(@Valid @RequestBody Launch launch, HttpServletResponse httpServletResponse){
 
         Launch savedLaunch = launchService.save(launch);
@@ -74,6 +78,7 @@ public class LaunchResource {
 
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_REMOVER_LANCAMENTO') and #oauth2.hasScope('write')")
     public ResponseEntity<Launch> deleteLaunch(@PathVariable Integer id){
         launchRepository.deleteById(id);
         return ResponseEntity.noContent().build();
