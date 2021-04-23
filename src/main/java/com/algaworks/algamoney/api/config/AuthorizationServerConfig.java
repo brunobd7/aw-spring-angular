@@ -40,16 +40,17 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 
         clients.inMemory()
-                    .withClient("angular")
-//                    .secret("$2a$10$zxVDBy0gHfi2E8SLWSLaC.RYdSm9DsOlHGe9oxkqrqHn6d9CHL/xW") //NOVA SENHA ENCODADA COM BCRYPT ENCODERs
-                    .secret("@ngul@r")
+                .withClient("angular")
+//                    .secret("@ngul@r")
+                    .secret("$2a$10$zxVDBy0gHfi2E8SLWSLaC.RYdSm9DsOlHGe9oxkqrqHn6d9CHL/xW") //NOVA SENHA ENCODADA COM BCRYPT ENCODERs
                     .scopes("write", "read")  /** SCOPE DE PERMISSAO DE ACESSO DO APP CLIENTE - OBRIGATORIO*/
                     .authorizedGrantTypes("password", "refresh_token") /**PASSWORD FLOW DOCUMENTACAO OAUTH2*/
                     .accessTokenValiditySeconds(1800) // VALIDADE DO ACCESSES TOKEN EM SEGUNDOS
                     .refreshTokenValiditySeconds(3600 * 24) //VALIDADE DO REFRESH TOKEN
                 .and()
                     .withClient("mobile") /**TESTE NOVO CLIENTE DA API*/
-                    .secret("m0b1l3")
+//                    .secret("m0b1l3")
+                    .secret("$2a$10$yu8V0yCu..DDDvPtQU.2wO9XjSB9Fwb6Wv3oRJtXj.y7EHtu0Esoy")
                     .scopes("read")
                     .authorizedGrantTypes("password", "refresh_token") //PASSWORD FLOW DOCUMENTACAO OAUTH2
                     .accessTokenValiditySeconds(1800)
