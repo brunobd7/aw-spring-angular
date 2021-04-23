@@ -9,6 +9,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -34,12 +35,14 @@ public class PersonResource {
 
     //NOT RETURNING RESPONSE ENTITY FOR EMPTY COLLECTION // VARIABLE TO BUSINNES RULES
     @GetMapping
+    @PreAuthorize("hasAuthority('ROLE_PESQUISAR_PESSOA') and #oauth2.hasScope('read')")
     public List<Person> listAll (){
         return personRepository.findAll();
     }
 
     //PATH VARIABLE BINDING FROM URL
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_PESQUISAR_PESSOA') and #oauth2.hasScope('read')")
     public ResponseEntity<Person> findPersonById(@PathVariable Integer id){
 
         //TRATAMENTO DA EXCEPTION COM LAMBDA JAVA 8 DIRETO NO RETORNO
@@ -55,6 +58,7 @@ public class PersonResource {
     //VALIDING ENTITY WITH @VALID LIB OF SPRING
     //REQUEST BODY TO OBJECT JAVA USING @REQUESTBODY
     @PostMapping
+    @PreAuthorize("hasAuthority('ROLE_CADASTRAR_PESSOA') and #oauth2.hasScope('write')")
     public ResponseEntity<Person> createPerson(@Valid @RequestBody Person person , HttpServletResponse httpServletResponse){
         //JPA CRUD IMPLEMENTATIONS FROM REPOSITORY INTERFACE
         Person createdPerson = personRepository.save(person);
