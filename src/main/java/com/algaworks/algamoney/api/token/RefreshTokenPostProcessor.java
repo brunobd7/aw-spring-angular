@@ -1,5 +1,7 @@
 package com.algaworks.algamoney.api.token;
 
+import com.algaworks.algamoney.api.config.property.AlgamoneyApiProperty;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -21,6 +23,12 @@ import javax.servlet.http.HttpServletResponse;
 // NO PARAMETRO DA INTERFACE RESPONSEBODYADVICE<T>
 @ControllerAdvice
 public class RefreshTokenPostProcessor implements ResponseBodyAdvice<OAuth2AccessToken> {
+
+
+    /**CLASSE DE CONFIGURACAO CRIADA*/
+    @Autowired
+    private AlgamoneyApiProperty algamoneyApiProperty;
+
 
     /**
      * APLICANDO CONDICAO PARA INTERCEPETACAO SOMENTE QUANDO UM POST FOR EXECUTADO PARA RETORNAR UM ACCESS TOKEN
@@ -66,7 +74,8 @@ public class RefreshTokenPostProcessor implements ResponseBodyAdvice<OAuth2Acces
         Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
 
         refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setSecure(false);//TODO MUDAR PARA TRUE QUANDO EM PRODUCAO HTTPS
+//        refreshTokenCookie.setSecure(false);//TODO MUDAR PARA TRUE QUANDO EM PRODUCAO HTTPS
+        refreshTokenCookie.setSecure(algamoneyApiProperty.getSeguranca().isEnableHttps());
         refreshTokenCookie.setPath(request.getContextPath()+"/oauth/token"); //PEGA CONTEXT DA REQUISICAO
         refreshTokenCookie.setMaxAge(259200); //QUANTO TEMPO PARA EXPIRACAO -> EM exemplo 30 dias
         response.addCookie(refreshTokenCookie); // add cookie no response

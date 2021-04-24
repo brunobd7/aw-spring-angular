@@ -63,6 +63,14 @@
 
         <!---->
 
+        <!-- CONFIGURACAO DE PROPRIEDADES DA API-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional><!--DEFINE SE DEPENDENCIA É OPCIONAL EM CASO DE ENCAPSULAMENTO -->
+        </dependency>
+        <!---->
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
