@@ -104,6 +104,11 @@
             <version>3.11</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-jpamodelgen</artifactId>
+        </dependency>
+
 
     </dependencies>
 
@@ -115,6 +120,7 @@
             </plugin>
 
             <!--GERAR META MODELS NO INTELLIJ-->
+<!--
             <plugin>
                 <groupId>org.bsc.maven</groupId>
                 <artifactId>maven-processor-plugin</artifactId>
@@ -124,12 +130,12 @@
                         <goals>
                             <goal>process</goal>
                         </goals>
-                        <phase>generate-sources</phase> <!-- Fase do ciclo de vida do maven onde o plugin vai ser executado -->
+                        <phase>generate-sources</phase> &lt;!&ndash; Fase do ciclo de vida do maven onde o plugin vai ser executado &ndash;&gt;
                         <configuration>
                             <processors>
-                                <processor>org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor</processor> <!-- Classe processadora que gerará os meta models-->
+                                <processor>org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor</processor> &lt;!&ndash; Classe processadora que gerará os meta models&ndash;&gt;
                             </processors>
-                            <outputDirectory>src/main/java</outputDirectory> <!-- Diretório onde você deseja salvar os MetaModels -->
+                            <outputDirectory>src/main/java</outputDirectory> &lt;!&ndash; Diretório onde você deseja salvar os MetaModels &ndash;&gt;
                         </configuration>
                     </execution>
                 </executions>
@@ -141,6 +147,7 @@
                     </dependency>
                 </dependencies>
             </plugin>
+-->
         </plugins>
     </build>
 

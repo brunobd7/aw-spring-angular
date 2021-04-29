@@ -65,8 +65,8 @@ public class LaunchRepositoryImpl implements LaunchRepositoryQuery {
         Root<Launch> root = criteriaQuery.from(Launch.class);
 
         criteriaQuery.select(criteriaBuilder.construct(LaunchResume.class,
-                root.get(Launch_.id),root.get(Launch_.description),root.get(Launch_.payDay),
-                root.get(Launch_.dueDate),root.get(Launch_.amount),root.get(Launch_.note),
+                root.get(Launch_.id), root.get(Launch_.description), root.get(Launch_.payDay),
+                root.get(Launch_.dueDate), root.get(Launch_.amount), root.get(Launch_.note),
                 root.get(Launch_.launchType),
                 root.get(Launch_.category).get(Category_.name),
                 root.get(Launch_.person).get(Person_.name)
