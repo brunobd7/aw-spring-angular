@@ -91,6 +91,11 @@
             <scope>runtime</scope>
         </dependency>
 
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+
         <!--DATABASE MIGRATION SCRIPTS-->
         <dependency>
             <groupId>org.flywaydb</groupId>
@@ -104,10 +109,12 @@
             <version>3.11</version>
         </dependency>
 
+        <!--GERAR META MODELS-->
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-jpamodelgen</artifactId>
         </dependency>
+        <!---->
 
 
     </dependencies>
@@ -119,7 +126,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
 
-            <!--GERAR META MODELS NO INTELLIJ-->
+            <!--GERAR META MODELS COM MAVEN-->
 <!--
             <plugin>
                 <groupId>org.bsc.maven</groupId>
