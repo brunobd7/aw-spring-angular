@@ -16,7 +16,7 @@ create table launch
         constraint launch_person_fk
             references person
 );
-
+/*ALTERAR RECEITA E DESPESA DE ACORDO COM ENUM LAUNCH_TYPE*/
 INSERT INTO launch (description, pay_day, due_date, amount, note, launch_type, id_category, id_person) values ('Salário mensal', '2017-06-10', null, 6500.00, 'Distribuição de lucros', 'RECEITA', 1, 1);
 INSERT INTO launch (description, pay_day, due_date, amount, note, launch_type, id_category, id_person) values ('Bahamas', '2017-02-10', '2017-02-10', 100.32, null, 'DESPESA', 2, 2);
 INSERT INTO launch (description, pay_day, due_date, amount, note, launch_type, id_category, id_person) values ('Top Club', '2017-06-10', null, 120, null, 'RECEITA', 3, 3);
