@@ -1,5 +1,6 @@
 package com.algaworks.algamoney.api.config;
 
+import com.algaworks.algamoney.api.config.token.CustomTokenEnhancer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,9 +10,13 @@ import org.springframework.security.oauth2.config.annotation.configurers.ClientD
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
+import org.springframework.security.oauth2.provider.token.TokenEnhancer;
+import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
+
+import java.util.Arrays;
 
 //OATUH2 AUTHORIZATION SERVER TO COMUNICATION AND ENABLE ACCESS TO CLIENT INTO RESOURCE SERVER(MODELS, METHODS, FUNCTIONS)
 @Configuration
@@ -60,9 +65,14 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
 
+        /**INCREMENTANDO INFORMACOES NO ACCESS TOKEN*/
+        TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
+        tokenEnhancerChain.setTokenEnhancers(Arrays.asList(tokenEnhancer(),accessTokenConverter()));
+
         endpoints
                 .tokenStore(tokenStore()) //ARMAZENA O TOKEN GERADO PELO  AUTHORIZATION SERVER PARA OS DEVIDOS ACESSOS
-                .accessTokenConverter(accessTokenConverter()) //GERANDO ACCESS TOKEN CONVERTER
+//                .accessTokenConverter(accessTokenConverter()) //GERANDO ACCESS TOKEN CONVERTER
+                .tokenEnhancer(tokenEnhancerChain) //TOKEN INCREMENTAL COM ATRIBUTOS ADICIONAIS (Nome user logado)
                 .reuseRefreshTokens(false) // DESABILITA O REUSO DO REFRESH TOKEN SEMPRE GERANDO UM NOVO
                 //ATT PARA VALIDAR USUARIO E SENHA NO BANCO DE DADOS
                 .userDetailsService(this.userDetailsService)
@@ -93,5 +103,10 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 //    public TokenStore tokenStore() {
 //        return new InMemoryTokenStore();
 //    }
+
+
+    public TokenEnhancer tokenEnhancer(){
+        return new CustomTokenEnhancer();
+    }
 
 }

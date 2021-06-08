@@ -30,7 +30,8 @@ public class AppUserDetailsService implements UserDetailsService {
         //CONSULTA O USUARIO E SUAS PERMISSOES E VALIDA COM AJUDA DO SPRING
         Optional<Users> usersOptional = usersRepository.findByEmail(email);
         Users users = usersOptional.orElseThrow(() -> new UsernameNotFoundException("Usuário e/ou senha incorretos"));
-        return new User(email, users.getPassword(), getPermissions(users));
+//        return new User(email, users.getPassword(), getPermissions(users));
+        return new SystemUser(users,getPermissions(users)); /**AJUSTANDO CUSTOM ENHANCER TOKEN PARA INFO ADICIONAIS NO TOKEN*/
     }
 
     private Collection<SimpleGrantedAuthority> getPermissions(Users users) {
