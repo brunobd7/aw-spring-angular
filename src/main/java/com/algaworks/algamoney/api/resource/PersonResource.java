@@ -3,10 +3,15 @@ package com.algaworks.algamoney.api.resource;
 import com.algaworks.algamoney.api.event.ResourceCreatedEvent;
 import com.algaworks.algamoney.api.model.Person;
 import com.algaworks.algamoney.api.repository.PersonRepository;
+import com.algaworks.algamoney.api.repository.filter.LaunchFilter;
+import com.algaworks.algamoney.api.repository.filter.PersonFilter;
+import com.algaworks.algamoney.api.repository.person.PersonRepositoryImpl;
 import com.algaworks.algamoney.api.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -33,12 +38,18 @@ public class PersonResource {
     @Autowired
     private ApplicationEventPublisher publisher;
 
-    //NOT RETURNING RESPONSE ENTITY FOR EMPTY COLLECTION // VARIABLE TO BUSINNES RULES
     @GetMapping
     @PreAuthorize("hasAuthority('ROLE_PESQUISAR_PESSOA') and #oauth2.hasScope('read')")
-    public List<Person> listAll (){
-        return personRepository.findAll();
+    public Page<Person> search(PersonFilter personFilter , Pageable pageable){
+        return personRepository.filter(personFilter,pageable);
     }
+
+    //NOT RETURNING RESPONSE ENTITY FOR EMPTY COLLECTION // VARIABLE TO BUSINNES RULES
+//    @GetMapping
+//    @PreAuthorize("hasAuthority('ROLE_PESQUISAR_PESSOA') and #oauth2.hasScope('read')")
+//    public List<Person> listAll (){
+//        return personRepository.findAll();
+//    }
 
     //PATH VARIABLE BINDING FROM URL
     @GetMapping("/{id}")
