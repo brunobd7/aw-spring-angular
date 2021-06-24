@@ -93,4 +93,17 @@ public class LaunchResource {
         return ResponseEntity.noContent().build();
     }
 
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_CADASTRAR_LANCAMENTO') and #oauth2.hasScope('write')")
+    public ResponseEntity<Launch> updateLaunch(@PathVariable Integer id ,@Valid @RequestBody Launch launchToUpdate){
+
+        try{
+            Launch updatedLaunch = launchService.update(id,launchToUpdate);
+            return ResponseEntity.ok(updatedLaunch);
+        }catch (IllegalArgumentException exception){
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }
